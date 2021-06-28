@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+
+<html lang="en" class="without-js">
+<head>
+  <title>Development Guide | Tow-Boot</title>
+  <base href="" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0" />
+  <link rel="stylesheet" href="styles/index.css" type="text/css" />
+  <link rel="shortcut icon" type="image/png" href="favicon.png" />
+  <meta property="og:image" content="logo/opengraph-image.png" />
+  <script>
+    var html = document.documentElement;
+    html.className = html.className.replace("without-js", "with-js");
+  </script>
+</head>
+
+<body>
+  <header>
+    <div>
+      <h1><a href="./">Tow-Boot</a></h1>
+      <nav>
+        <ul>
+          <li><a href="FAQ.html">FAQ</a></li>
+          <li><a href="getting-started.html">Getting Started</a></li>
+          <li><a href="https://github.com/Tow-Boot/Tow-Boot/releases">Releases</a></li>
+          <li><a href="https://github.com/Tow-Boot/Tow-Boot/">Code</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <div class="generic-layout">
+<h1>Development Guide</h1>
+<h2>Required setup</h2>
+<p>A Linux host and Nix are the two requirements for this project. Knowledge about
+using <code>git</code> will help, but fetching a tarball or zip from GitHub could do in a
+pinch.</p>
+<h3>Nix</h3>
+<p>The author uses NixOS, but NixOS is not a requirement.</p>
+<p>Only <em>Nix</em> the package manager is required to build this project. It can be
+installed on any Linux distribution.</p>
+<h4>I don't want to or can't install <code>Nix</code> on my system</h4>
+<p>Sorry.</p>
+<p>Though you can use a Docker container image <strong>TODO</strong> that is pre-configured to
+work well with this project.</p>
+<p>Using Nix through Docker is not ideal, but should work when working under
+specific conditions.</p>
+<p>While Nix works on macOS, this project require a Linux builder to work. Using
+the Docker builder is an alternative to setting up a Linux virtual machine.
+After all, Docker on macOS is a specialized Linux virtual machine. <strong>TO BE TESTED</strong></p>
+<h2>A primer on Nix</h2>
+<p>First, read more about Nix elsewhere. Nix here is used as a glue to configure
+the builds.</p>
+<p>Knowing Nix will help you better understand what you are looking at.</p>
+<p>Look at the following resources.</p>
+<ul>
+<li><a href="https://github.com/tazjin/nix-1p">nix-1p</a> probably is the best condensed primer on Nix.</li>
+</ul>
+<p>The upstream manuals of the NixOS project are good, but mainly <em>when you already
+have knowledge about Nix</em>. They are more of a reference than a learning resource.</p>
+<ul>
+<li><a href="https://nixos.org/manual/nix/stable/">Nix Manual</a></li>
+<li><a href="https://nixos.org/manual/nixpkgs/stable/">Nixpkgs Manual</a></li>
+<li><a href="https://nixos.org/manual/nixos/stable/">NixOS Manual</a></li>
+</ul>
+<h2>Important concepts</h2>
+<h3>What's <code>callPackage</code>?</h3>
+<p><code>callPackage</code> is a sort of dependency injection that is borrowed from <em>Nixpkgs</em>.</p>
+<ul>
+<li>Allows dependency injection</li>
+<li>Makes the derivations &quot;overridable&quot;</li>
+</ul>
+<p>The dependency injection makes it so we don't have to really care about where
+the dependencies are in the codebase. As long as it's in the scope <code>callPackage</code>
+is working with, we can &quot;ask&quot; for a dependency.</p>
+<p>Making derivations &quot;overridable&quot; allows us to customize the derivations. This
+can be used for dependencies coming from Nixpkgs, or to make one-off
+customizations of our own derivations.</p>
+
+    </div>
+  </main>
+
+  <footer>
+    <div>
+      <nav>
+        <ul>
+          <li><a href="sitemap.html">Sitemap</a></li>
+        </ul>
+      </nav>
+    </div>
+  </footer>
+</body>
+</html>

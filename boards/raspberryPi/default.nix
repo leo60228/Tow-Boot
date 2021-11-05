@@ -5,14 +5,26 @@
 , vboot_reference
 , writeText
 , xxd
+, fetchFromGitHub
 }:
 
 let
   inherit (systems) aarch64;
   inherit (aarch64.nixpkgs)
     raspberrypi-armstubs
-    raspberrypifw
   ;
+
+  # TODO: not needed once https://github.com/NixOS/nixpkgs/pull/144649 lands
+  raspberrypifw = aarch64.nixpkgs.raspberrypifw.overrideAttrs (oldAttrs: rec {
+    version = "2021-11-02";
+
+    src = fetchFromGitHub {
+      owner = "raspberrypi";
+      repo = "firmware";
+      rev = "27f12ea332fa4d94b963f8e0f6e48502684a5343";
+      sha256 = "uJnWIzLGnixe0PckhW3ibnvcm5GVAfix0SHozvrjtdI=";
+    };
+  });
 
   build = args: aarch64.buildTowBoot ({
     variant = "noenv";
@@ -23,6 +35,7 @@ let
     patches = [
       ./0001-configs-rpi-allow-for-bigger-kernels.patch
       ./0001-Tow-Boot-rpi-Increase-malloc-pool-up-to-64MiB-env.patch
+      ./0001-rpi-Add-identifier-for-Pi-Zero-2-W.patch
     ];
     # The necessary implementation is not provided by U-Boot.
     withPoweroff = false;
@@ -38,6 +51,10 @@ let
     boardIdentifier = "raspberryPi-4";
     defconfig = "rpi_4_defconfig";
   };
+  raspberryPi-02w = build {
+    boardIdentifier = "raspberryPi-02w";
+    defconfig = "rpi_arm64_defconfig"; # no device tree in U-Boot/mainline yet
+  };
 
   config = writeText "config.txt" ''
     [pi3]
@@ -48,6 +65,9 @@ let
     enable_gic=1
     armstub=armstub8-gic.bin
     disable_overscan=1
+
+    [pi02]
+    kernel=Tow-Boot.noenv.rpi02w.bin
 
     [all]
     arm_64bit=1
@@ -97,11 +117,12 @@ let
       cp -v ${config} config.txt
       cp -v ${raspberryPi-3}/binaries/Tow-Boot.noenv.bin Tow-Boot.noenv.rpi3.bin
       cp -v ${raspberryPi-4}/binaries/Tow-Boot.noenv.bin Tow-Boot.noenv.rpi4.bin
+      cp -v ${raspberryPi-02w}/binaries/Tow-Boot.noenv.bin Tow-Boot.noenv.rpi02w.bin
       cp -v ${raspberrypi-armstubs}/armstub8-gic.bin armstub8-gic.bin
       (
         target="$PWD"
         cd ${raspberrypifw}/share/raspberrypi/boot
-        cp -v bcm2711-rpi-4-b.dtb "$target/"
+        cp -v bcm2711-rpi-4-b.dtb bcm2710-rpi-zero-2-w.dtb "$target/"
         cp -v bootcode.bin fixup*.dat start*.elf "$target/"
       )
     '';
@@ -126,6 +147,10 @@ in
       cp -rv ${raspberryPi-4.patchset} tow-boot-rpi4-patches
       cp -v ${raspberryPi-4}/binaries/Tow-Boot.noenv.bin $out/binaries/Tow-Boot.noenv.rpi4.bin
       cp -v ${raspberryPi-4}/config/noenv.config config/noenv.rpi4.config
+
+      cp -rv ${raspberryPi-02w.patchset} tow-boot-rpi02w-patches
+      cp -v ${raspberryPi-02w}/binaries/Tow-Boot.noenv.bin $out/binaries/Tow-Boot.noenv.rpi02w.bin
+      cp -v ${raspberryPi-02w}/config/noenv.config config/noenv.rpi02w.config
 
       cp -v ${baseImage}/*.img $out/shared.disk-image.img
     )

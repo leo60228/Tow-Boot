@@ -1,0 +1,28 @@
+From 517bdfedea844708564c304c3e88adc846ab8331 Mon Sep 17 00:00:00 2001
+From: leo60228 <leo@60228.dev>
+Date: Thu, 4 Nov 2021 14:31:48 -0400
+Subject: [PATCH] rpi: Add identifier for Pi Zero 2 W
+
+---
+ board/raspberrypi/rpi/rpi.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/board/raspberrypi/rpi/rpi.c b/board/raspberrypi/rpi/rpi.c
+index 55afaa54d9..99bed5c5ec 100644
+--- a/board/raspberrypi/rpi/rpi.c
++++ b/board/raspberrypi/rpi/rpi.c
+@@ -157,6 +157,11 @@ static const struct rpi_model rpi_models_new_scheme[] = {
+ 		DTB_DIR "bcm2711-rpi-4-b.dtb",
+ 		true,
+ 	},
++	[0x12] = {
++		"Zero 2 W",
++		DTB_DIR "bcm2710-rpi-zero-2-w.dtb",
++		false,
++	},
+ 	[0x13] = {
+ 		"400",
+ 		DTB_DIR "bcm2711-rpi-400.dtb",
+-- 
+2.31.1
+

@@ -122,7 +122,7 @@ let
       (
         target="$PWD"
         cd ${raspberrypifw}/share/raspberrypi/boot
-        cp -v bcm2711-rpi-4-b.dtb bcm2710-rpi-zero-2-w.dtb "$target/"
+        cp -v bcm2711-rpi-4-b.dtb bcm2710-rpi-zero-2.dtb "$target/"
         cp -v bootcode.bin fixup*.dat start*.elf "$target/"
       )
     '';
